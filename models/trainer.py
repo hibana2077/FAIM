@@ -377,17 +377,32 @@ class FAIMTrainer:
     
     def _get_features(self, images: torch.Tensor) -> torch.Tensor:
         """Extract features from backbone (before classification head)."""
-        # This is a generic approach - might need adjustment for specific models
-        features = images
-        for name, module in self.model.named_children():
-            if name != 'head':
-                features = module(features)
-            else:
-                break
+        # For timm models, we need to be more careful about feature extraction
+        if hasattr(self.model, 'forward_features'):
+            # Use the forward_features method if available (common in timm models)
+            features = self.model.forward_features(images)
+        else:
+            # Fallback: manually iterate through layers
+            features = images
+            for name, module in self.model.named_children():
+                if name not in ['head', 'classifier', 'fc']:
+                    features = module(features)
+                else:
+                    break
         
-        # Flatten if needed
+        # Handle different feature shapes
         if features.dim() > 2:
-            features = features.view(features.size(0), -1)
+            # For ViT models, features might be [B, seq_len, dim] - take the CLS token or global average
+            if features.dim() == 3:
+                # Assume this is [batch, sequence, features] from ViT
+                # Take the first token (CLS token) or average pool
+                if hasattr(self.model, 'global_pool') and self.model.global_pool == 'avg':
+                    features = features.mean(dim=1)
+                else:
+                    features = features[:, 0]  # CLS token
+            else:
+                # Flatten other cases
+                features = features.view(features.size(0), -1)
         
         return features
     

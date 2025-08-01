@@ -303,7 +303,8 @@ def create_faim_model(
     pretrained: bool = True,
     lambda_init: float = 0.1,
     scale_init: float = 10.0,
-    full_sigma: bool = False
+    full_sigma: bool = False,
+    eps: float = 1e-6
 ) -> nn.Module:
     """Create a model with FAIM-Head replacing the original classifier.
     
@@ -314,6 +315,7 @@ def create_faim_model(
         lambda_init: Initial lambda parameter for FAIM-Head
         scale_init: Initial scale parameter for FAIM-Head
         full_sigma: Whether to use full Sigma matrix
+        eps: Small constant for numerical stability
         
     Returns:
         model: Model with FAIM-Head
@@ -336,7 +338,8 @@ def create_faim_model(
         num_classes=num_classes,
         lambda_init=lambda_init,
         scale_init=scale_init,
-        full_sigma=full_sigma
+        full_sigma=full_sigma,
+        eps=eps
     )
     
     # Replace the classifier/head

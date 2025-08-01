@@ -249,7 +249,7 @@ def main():
     print("=" * 80)
     
     # Get configuration
-    print("\\n📋 Loading configuration...")
+    print("\n📋 Loading configuration...")
     
     if args.quick:
         config = get_quick_config(
@@ -352,7 +352,7 @@ def main():
     
     try:
         # Create data loaders
-        print("\\n📊 Creating data loaders...")
+        print("\n📊 Creating data loaders...")
         dataloaders = create_data_module(config)
         
         if not dataloaders:
@@ -396,7 +396,7 @@ def main():
         print(f"📈 Image shape: {sample_images.shape[1:]}")
         
         # Create model
-        print("\\n🏗️ Creating model...")
+        print("\n🏗️ Creating model...")
         model = create_faim_model(
             model_name=config['model']['name'],
             num_classes=num_classes,
@@ -424,7 +424,7 @@ def main():
             print(f"✅ Model forward pass successful: {test_input.shape} -> {test_output.shape}")
         
         # Training
-        print("\\n🚀 Starting training...")
+        print("\n🚀 Starting training...")
         training_results = train_full_pipeline(
             model=model,
             train_loader=dataloaders['train'],
@@ -435,12 +435,12 @@ def main():
             log_dir=str(log_dir)
         )
         
-        print(f"\\n🎉 Training completed!")
+        print(f"\n🎉 Training completed!")
         print(f"Best validation accuracy: {training_results['best_accuracy']:.3f}%")
         
         # Final evaluation
         if not args.no_eval and test_loader:
-            print("\\n📊 Running final evaluation...")
+            print("\n📊 Running final evaluation...")
             
             eval_results = evaluate_model_comprehensive(
                 model=model,
@@ -477,17 +477,17 @@ def main():
             
             json.dump(json_results, f, indent=2, default=str)
         
-        print(f"\\n📋 Complete results saved to {log_dir}")
-        print("\\n✅ Experiment completed successfully!")
+        print(f"\n📋 Complete results saved to {log_dir}")
+        print("\n✅ Experiment completed successfully!")
         
         return 0
         
     except KeyboardInterrupt:
-        print("\\n⏹️ Training interrupted by user")
+        print("\n⏹️ Training interrupted by user")
         return 1
         
     except Exception as e:
-        print(f"\\n❌ Error during training: {e}")
+        print(f"\n❌ Error during training: {e}")
         import traceback
         traceback.print_exc()
         return 1
