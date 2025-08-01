@@ -36,7 +36,7 @@ sys.path.insert(0, str(project_root))
 from models import create_faim_model, train_full_pipeline
 from config import get_config, get_quick_config, validate_config, print_config
 from utils import create_data_module, evaluate_model_comprehensive
-from dataset import UFGVCDataset
+from dataset.ufgvc import UFGVCDataset
 
 
 def set_seed(seed: int):
